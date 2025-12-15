@@ -1,0 +1,44 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  min-height: 100vh;
+}
+
+.gradient-bg {
+  background-image: radial-gradient(circle at 30% 20%, rgba(255, 69, 0, 0.25), transparent 38%),
+    radial-gradient(circle at 80% 10%, rgba(255, 0, 80, 0.18), transparent 40%),
+    radial-gradient(circle at 50% 80%, rgba(99, 0, 0, 0.35), transparent 48%),
+    linear-gradient(160deg, #060606 0%, #0b0b0f 40%, #111118 100%);
+}
+
+.card-surface {
+  @apply rounded-2xl border border-white/10 bg-white/5 shadow-glow backdrop-blur;
+}
+
+.badge {
+  @apply rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white;
+}
+
+.input-shell {
+  @apply flex w-full items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-base text-slate-100 shadow-glow transition focus-within:border-brand focus-within:bg-white/10;
+}
+
+.input-shell input {
+  @apply w-full bg-transparent text-white placeholder:text-slate-400 focus:outline-none;
+}
+
+.button-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand via-brand-soft to-amber-400 px-5 py-3 text-base font-semibold text-white shadow-glow transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand;
+}
+
+.button-secondary {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-transparent px-5 py-3 text-base font-semibold text-white transition hover:border-brand hover:text-brand focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand;
+}
