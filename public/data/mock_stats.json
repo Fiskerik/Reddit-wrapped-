@@ -1,0 +1,41 @@
+{
+  "username": "ANVANDARNAMN",
+  "year": 2025,
+  "total_activity": 1507,
+  "total_upvotes": 45920,
+  "days_active": 365,
+  "top_subreddits": [
+    {
+      "name": "r/wallstreetbets",
+      "count": 612
+    },
+    {
+      "name": "r/webdev",
+      "count": 355
+    },
+    {
+      "name": "r/AskReddit",
+      "count": 289
+    }
+  ],
+  "most_active_month": {
+    "month": "Mars",
+    "count": 211
+  },
+  "best_post": {
+    "type": "Kommentar",
+    "subreddit": "r/funny",
+    "excerpt": "Jag trodde att jag var smart, men min kaffebryggare vann debatten i morse.",
+    "karma": 12450,
+    "published": "2025-07-16"
+  },
+  "activity_breakdown": {
+    "comments_percentage": 78,
+    "posts_percentage": 22,
+    "persona": "Deep Diver"
+  },
+  "most_used_emoji": {
+    "emoji": "\ud83d\ude80",
+    "count": 57
+  }
+}
