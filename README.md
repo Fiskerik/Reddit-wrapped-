@@ -4,6 +4,9 @@ Ett första utkast till en "Reddit Wrapped"-upplevelse med mörk, energisk och m
 
 ## Demoöversikt
 - **Introduktion &amp; sammanfattning** visar total aktivitet, karma och antal aktiva dagar.
+- **Konto &amp; identitet** lyfter karmafördelning, cake day och ev. premiumstatus.
+- **Aktivitet &amp; persona** bryter ned fördelning mellan inlägg och kommentarer för året och visar persona-taggen.
+- **Engagemang** redovisar genomsnittlig karma per post/kommentar, karma per dag, awards och mest använda emoji.
 - **Topp 3 subreddits** renderas som adaptiva staplar med extra datapunkt för mest aktiva månad.
 - **Posten som definierade dig** lyfter fram den mest framgångsrika posten/kommentaren, aktivitetsprofil (inlägg vs. kommentarer) och mest använda emoji.
 

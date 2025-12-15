@@ -37,5 +37,26 @@
   "most_used_emoji": {
     "emoji": "\ud83d\ude80",
     "count": 57
+  },
+  "totals": {
+    "posts": 320,
+    "comments": 1187
+  },
+  "averages": {
+    "post_average": 86,
+    "comment_average": 21,
+    "total_post_karma": 27520,
+    "total_comment_karma": 18400
+  },
+  "engagement": {
+    "awards": 42,
+    "average_karma_per_day": 126
+  },
+  "profile": {
+    "avatar": "https://styles.redditmedia.com/t5_6/styles/profileIcon.png",
+    "cake_day": "2023-11-15",
+    "is_gold": false,
+    "post_karma": 27520,
+    "comment_karma": 18400
   }
 }

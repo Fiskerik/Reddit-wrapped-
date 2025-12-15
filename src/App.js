@@ -1,6 +1,9 @@
 import { renderIntroCard } from "./components/IntroCard.js";
 import { renderSubredditChart } from "./components/SubredditChart.js";
 import { renderKarmaTrophy } from "./components/KarmaTrophy.js";
+import { renderAccountCard } from "./components/AccountCard.js";
+import { renderActivityCard } from "./components/ActivityCard.js";
+import { renderEngagementCard } from "./components/EngagementCard.js";
 
 const MONTHS_SV = [
   "Januari",
@@ -17,6 +20,7 @@ const MONTHS_SV = [
   "December",
 ];
 
+const TARGET_YEAR = 2025;
 const MOCK_PATH = "./public/data/mock_stats.json";
 
 function renderLayout() {
@@ -57,10 +61,13 @@ function renderStats(data) {
   }
 
   const intro = renderIntroCard(data);
+  const account = renderAccountCard(data);
   const chart = renderSubredditChart(data);
   const trophy = renderKarmaTrophy(data);
+  const activity = renderActivityCard(data);
+  const engagement = renderEngagementCard(data);
 
-  results.innerHTML = `${intro}${chart}${trophy}`;
+  results.innerHTML = `${intro}${account}${chart}${trophy}${activity}${engagement}`;
 }
 
 function setStatus(message, tone = "neutral") {
@@ -176,27 +183,53 @@ function deriveBestPost(posts, comments) {
   };
 }
 
+function calculateAverages(posts, comments) {
+  const totalPostKarma = posts.reduce((sum, post) => sum + (post.score || 0), 0);
+  const totalCommentKarma = comments.reduce((sum, comment) => sum + (comment.score || 0), 0);
+
+  const postAverage = posts.length ? Math.round(totalPostKarma / posts.length) : 0;
+  const commentAverage = comments.length ? Math.round(totalCommentKarma / comments.length) : 0;
+
+  return {
+    post_average: postAverage,
+    comment_average: commentAverage,
+    total_post_karma: totalPostKarma,
+    total_comment_karma: totalCommentKarma,
+  };
+}
+
 function normalizeRedditStats(username, profile, postsResponse, commentsResponse) {
-  const posts = (postsResponse?.data?.children || []).map((entry) => entry.data);
-  const comments = (commentsResponse?.data?.children || []).map((entry) => entry.data);
-  const combined = [...posts, ...comments];
+  const rawPosts = (postsResponse?.data?.children || []).map((entry) => entry.data);
+  const rawComments = (commentsResponse?.data?.children || []).map((entry) => entry.data);
+  const targetYear = TARGET_YEAR || new Date().getFullYear();
+
+  const posts = rawPosts.filter((post) => new Date(post.created_utc * 1000).getFullYear() === targetYear);
+  const comments = rawComments.filter(
+    (comment) => new Date(comment.created_utc * 1000).getFullYear() === targetYear
+  );
+
+  const filteredPosts = posts.length ? posts : rawPosts;
+  const filteredComments = comments.length ? comments : rawComments;
+  const combined = [...filteredPosts, ...filteredComments];
 
   const totalUpvotes = combined.reduce((sum, item) => sum + (item.score || 0), 0);
   const topSubreddits = deriveTopSubreddits(combined);
   const mostActiveMonth = deriveMostActiveMonth(combined);
-  const bestPost = deriveBestPost(posts, comments);
+  const bestPost = deriveBestPost(filteredPosts, filteredComments);
   const emojiUsage = deriveEmojiUsage(combined);
 
   const totalActivity = combined.length;
-  const postShare = totalActivity ? Math.round((posts.length / totalActivity) * 100) : 0;
+  const postShare = totalActivity ? Math.round((filteredPosts.length / totalActivity) * 100) : 0;
   const commentShare = totalActivity ? 100 - postShare : 0;
 
   const createdSeconds = profile?.data?.created_utc || Date.now() / 1000;
   const daysActive = Math.max(1, Math.floor((Date.now() / 1000 - createdSeconds) / 86400));
+  const averages = calculateAverages(filteredPosts, filteredComments);
+  const awards = combined.reduce((sum, item) => sum + (item.total_awards_received || 0), 0);
 
   return {
     username: username || profile?.data?.name || "redditör",
-    year: new Date().getFullYear(),
+    year: targetYear,
     total_activity: totalActivity,
     total_upvotes: totalUpvotes,
     days_active: daysActive,
@@ -209,14 +242,27 @@ function normalizeRedditStats(username, profile, postsResponse, commentsResponse
       persona: commentShare > 65 ? "Deep Diver" : postShare > 65 ? "Storyteller" : "Explorer",
     },
     most_used_emoji: emojiUsage,
+    totals: { posts: filteredPosts.length, comments: filteredComments.length },
+    averages,
+    engagement: {
+      awards,
+      average_karma_per_day: Math.round(totalUpvotes / Math.max(1, daysActive)),
+    },
+    profile: {
+      avatar: profile?.data?.icon_img || "",
+      cake_day: new Date(createdSeconds * 1000).toISOString().slice(0, 10),
+      is_gold: Boolean(profile?.data?.is_gold || profile?.data?.is_premium),
+      post_karma: profile?.data?.link_karma ?? averages.total_post_karma,
+      comment_karma: profile?.data?.comment_karma ?? averages.total_comment_karma,
+    },
   };
 }
 
 async function fetchRedditStats(username) {
   const cleanUsername = username.replace(/^u\//i, "").trim();
   const profileUrl = `https://www.reddit.com/user/${cleanUsername}/about.json`;
-  const postsUrl = `https://www.reddit.com/user/${cleanUsername}/submitted.json?limit=50`;
-  const commentsUrl = `https://www.reddit.com/user/${cleanUsername}/comments.json?limit=50`;
+  const postsUrl = `https://www.reddit.com/user/${cleanUsername}/submitted.json?limit=100&t=year`;
+  const commentsUrl = `https://www.reddit.com/user/${cleanUsername}/comments.json?limit=100&t=year`;
 
   const [profile, posts, comments] = await Promise.all([
     fetchJson(profileUrl, "profil"),
