@@ -1,6 +1,6 @@
 # Reddit Wrapped Generator (2025)
 
-Ett första utkast till en "Reddit Wrapped"-upplevelse med mörk, energisk och mobilvänlig design. Den här prototypen använder mockdata för att visualisera statistik och kan enkelt kopplas till Reddit API i nästa steg.
+Ett första utkast till en "Reddit Wrapped"-upplevelse med mörk, energisk och mobilvänlig design. Den här prototypen använder nu Reddit:s öppna JSON-endpoints (about, submitted och comments) för att hämta data för ett valt användarnamn, med fallback till mockdata om nätverket svarar med fel.
 
 ## Demoöversikt
 - **Introduktion &amp; sammanfattning** visar total aktivitet, karma och antal aktiva dagar.
@@ -28,6 +28,7 @@ index.html                    # Enkel statisk entrypoint
    python3 -m http.server 8000
    ```
 2. Öppna [http://localhost:8000](http://localhost:8000) i din browser och se prototypen.
+3. Ange valfritt Reddit-användarnamn i formuläret (du kan skriva både `u/namn` eller bara `namn`). Verktyget hämtar live-data; vid fel visas mockad data.
 
 ## Backend-demo (Frivilligt)
 En minimal Flask-endpoint finns i `server/api/get_stats.py` om du vill exponera mockdatan via API:
